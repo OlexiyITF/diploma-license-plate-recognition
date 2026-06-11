@@ -8,9 +8,9 @@ import torchvision.transforms as T
 from PIL import Image
 import numpy as np
 
-# --- НАЛАШТУВАННЯ ---
+
 TRAIN_DIR = r'dataset\ukr_plates\train\images'
-EPOCHS = 10  # ResNet вчиться дуже швидко, 10 епох вистачить
+EPOCHS = 10
 BATCH_SIZE = 64
 LEARNING_RATE = 0.001
 
@@ -22,8 +22,7 @@ SEQ_LENGTH = 8
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Використовується пристрій: {device}")
 
-# --- 1. АУГМЕНТАЦІЯ ДАНИХ (Data Augmentation) ---
-# Це робить нашу мережу стійкою до поганих фотографій
+# АУГМЕНТАЦІЯ ДАНИХ
 transform = T.Compose([
     T.Resize((64, 224)),
     T.RandomRotation(degrees=5),  # Випадковий нахил до 5 градусів
@@ -53,7 +52,6 @@ class LicensePlateDataset(Dataset):
         img_name = self.img_names[idx]
         img_path = os.path.join(self.img_dir, img_name)
 
-        # Використовуємо PIL, бо torchvision.transforms працює з ним найкраще
         image = Image.open(img_path).convert('RGB')
 
         if self.transform:
@@ -71,7 +69,7 @@ class MultiHeadResNet(nn.Module):
     def __init__(self):
         super(MultiHeadResNet, self).__init__()
 
-        # Завантажуємо базовий ResNet18 (без попереднього навчання, вчимо з нуля під наші номери)
+        # Завантажуємо базовий ResNet18
         resnet = models.resnet18(weights=None)
 
         # Відрізаємо останній шар класифікації (fc), залишаємо тільки екстрактор ознак

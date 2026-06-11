@@ -7,9 +7,9 @@ import torchvision.transforms as T
 from PIL import Image
 import numpy as np
 
-# --- НАЛАШТУВАННЯ ---
-TRAIN_DIR = r'dataset\ukr_plates\train\images'  # Папка з твоїм НОВИМ датасетом
-EPOCHS = 20  # CRNN вчиться довше, тому ставимо 20
+
+TRAIN_DIR = r'dataset\ukr_plates\train\images'
+EPOCHS = 20
 BATCH_SIZE = 64
 LEARNING_RATE = 0.001
 
@@ -63,7 +63,7 @@ def collate_fn(batch):
     images, labels, label_lengths = zip(*batch)
     images = torch.stack(images, 0)
 
-    # Зшиваємо всі мітки в один довгий 1D тензор (вимога CTCLoss)
+    # Зшиваємо всі мітки в один довгий 1D тензор
     labels = torch.cat(labels, 0)
     label_lengths = torch.tensor(label_lengths, dtype=torch.long)
 
@@ -111,7 +111,6 @@ class CRNN(nn.Module):
         # Вихід: (Batch, TimeSteps, NumClasses)
         output = self.fc(rnn_out)
 
-        # Для PyTorch CTCLoss потрібен формат (TimeSteps, Batch, NumClasses)
         output = output.permute(1, 0, 2)
 
         # CTC Loss очікує log_softmax

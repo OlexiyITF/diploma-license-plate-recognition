@@ -1,12 +1,11 @@
 import os
 import shutil
 
-# --- налаштування шляхів ---
-# Тепер нам потрібна ТІЛЬКИ папка img!
+#налаштування шляхів
 RIA_IMAGES_DIR = r'E:\Program_works\trash_zone_for_diploma\train\img'
 DEST_DIR = r'E:\Program_works\Diploma_work\dataset\ukr_plates\train\images'
 
-# Наш словник (тільки латиниця і цифри)
+#Словник
 CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
@@ -53,12 +52,10 @@ def main():
             new_filename = f"{clean_text}{ext}"
             dst_path = os.path.join(DEST_DIR, new_filename)
 
-            # Копіюємо, якщо такого номера ще немає
             if not os.path.exists(dst_path):
                 shutil.copy(src_path, dst_path)
                 custom_plates_copied += 1
 
-            # 500 номерів
             if custom_plates_copied >= 500:
                 break
 
