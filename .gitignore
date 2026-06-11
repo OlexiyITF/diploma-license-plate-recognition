@@ -1,0 +1,11 @@
+__pycache__/
+*.pth
+*.pt
+.venv/
+dataset/
+test_dataset/
+cropped_plates/
+custom_test/
+runs/
+*.png
+*.jpg
