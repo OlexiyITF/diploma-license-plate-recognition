@@ -22,13 +22,13 @@ SEQ_LENGTH = 8
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Використовується пристрій: {device}")
 
-# АУГМЕНТАЦІЯ ДАНИХ
+
 transform = T.Compose([
     T.Resize((64, 224)),
-    T.RandomRotation(degrees=5),  # Випадковий нахил до 5 градусів
-    T.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),  # Гра зі світлом
+    T.RandomRotation(degrees=5),
+    T.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
     T.ToTensor(),
-    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Стандартна нормалізація для ResNet
+    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
 
@@ -64,31 +64,26 @@ class LicensePlateDataset(Dataset):
         return image, torch.tensor(label_idx, dtype=torch.long)
 
 
-# --- 2. АРХІТЕКТУРА МЕРЕЖІ (ResNet18 + Multi-Head) ---
 class MultiHeadResNet(nn.Module):
     def __init__(self):
         super(MultiHeadResNet, self).__init__()
 
-        # Завантажуємо базовий ResNet18
         resnet = models.resnet18(weights=None)
 
-        # Відрізаємо останній шар класифікації (fc), залишаємо тільки екстрактор ознак
         self.features = nn.Sequential(*list(resnet.children())[:-1])
 
-        # Вихідний розмір ResNet18 перед останнім шаром - 512
         self.fc_heads = nn.ModuleList([
             nn.Linear(512, NUM_CLASSES) for _ in range(SEQ_LENGTH)
         ])
 
     def forward(self, x):
         x = self.features(x)
-        x = x.view(x.size(0), -1)  # Flatten (batch_size, 512)
+        x = x.view(x.size(0), -1)
 
         outputs = [head(x) for head in self.fc_heads]
         return outputs
 
 
-# --- 3. ЦИКЛ НАВЧАННЯ ---
 def train_model():
     print("Завантаження датасету з аугментацією...")
     train_dataset = LicensePlateDataset(TRAIN_DIR, transform=transform)
