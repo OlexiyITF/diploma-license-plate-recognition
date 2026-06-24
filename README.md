@@ -21,8 +21,7 @@
 git clone [https://github.com/OlexiylTF/diploma-license-plate-recognition.git](https://github.com/OlexiylTF/diploma-license-plate-recognition.git)
 
 2. Встановіть необхідні залежності:
-```bash
-pip install torch torchvision streamlit Pillow numpy
+`pip install torch torchvision streamlit Pillow numpy`
 
 3. Запустіть локальний сервер Streamlit:
-streamlit run app.py
+`streamlit run app.py`
